@@ -33,7 +33,7 @@ func handleGetUser(
 				return EncodeError(w, app.NewError(err, http.StatusBadRequest, "user id must be integer value"))
 			}
 			user := &user.User{
-				Id:   id,
+				ID:   id,
 				Name: "John",
 			}
 			logger.LogAttrs(
@@ -64,7 +64,7 @@ func handleCreateUser(
 			}
 
 			usr := user.User{
-				Id:   42,
+				ID:   42,
 				Name: requestBody.Name,
 			}
 

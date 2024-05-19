@@ -27,9 +27,9 @@ const (
 
 func NewConfig(getenv func(string) string, args []string) *Config {
 	var (
-		env      string = getenv("APP_ENV")
-		port     string = getenv("APP_PORT")
-		host     string = getenv("APP_HOST")
+		env      = getenv("APP_ENV")
+		port     = getenv("APP_PORT")
+		host     = getenv("APP_HOST")
 		logLevel slog.Level
 	)
 
