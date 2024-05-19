@@ -14,34 +14,32 @@ func NewContextHandler(h slog.Handler) *ContextHandler {
 }
 
 func (h ContextHandler) Handle(ctx context.Context, r slog.Record) error {
-	if attrs, ok := ctx.Value(slogFields).([]slog.Attr); ok {
-		for _, v := range attrs {
-			r.AddAttrs(v)
-		}
+	if requestID := GetRequestID(ctx); requestID != "" {
+		r.AddAttrs(slog.String("req_id", requestID))
 	}
 
 	return h.Handler.Handle(ctx, r)
 }
 
-// AppendCtx adds an slog attribute to the provided context so that it will be
-// included in any Record created with such context
-func AppendCtx(parent context.Context, attr slog.Attr) context.Context {
-	if parent == nil {
-		parent = context.Background()
+func GetRequestID(ctx context.Context) string {
+	if requestID, ok := ctx.Value(requestIDKey).(string); ok {
+		return requestID
 	}
 
-	if v, ok := parent.Value(slogFields).([]slog.Attr); ok {
-		v = append(v, attr)
-		return context.WithValue(parent, slogFields, v)
+	return ""
+}
+
+func WithRequestID(ctx context.Context, requestID string) context.Context {
+	if requestID == "" {
+		return ctx
 	}
 
-	v := []slog.Attr{}
-	v = append(v, attr)
-	return context.WithValue(parent, slogFields, v)
+	ctx = context.WithValue(ctx, requestIDKey, requestID)
+	return ctx
 }
 
 type ctxKey string
 
-const (
-	slogFields ctxKey = "slog_fields"
+var (
+	requestIDKey ctxKey = "reqID"
 )

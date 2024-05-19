@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"log/slog"
 	"net/http"
 	"runtime"
@@ -14,7 +13,7 @@ func NewRequestLogger(logger *slog.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
-			ctx := withRequestID(r.Context(), r.Header.Get("x-request-id"))
+			ctx := logging.WithRequestID(r.Context(), r.Header.Get("x-request-id"))
 			r = r.WithContext(ctx)
 
 			rle := requestLogEntry{
@@ -58,31 +57,6 @@ func Recover(logger *slog.Logger) Middleware {
 		})
 	}
 }
-
-func GetRequestID(ctx context.Context) string {
-	if requestID, ok := ctx.Value(requestIDKey).(string); ok {
-		return requestID
-	}
-
-	return ""
-}
-
-func withRequestID(ctx context.Context, requestID string) context.Context {
-	if requestID == "" {
-		return ctx
-	}
-
-	ctx = context.WithValue(ctx, requestIDKey, requestID)
-	ctx = logging.AppendCtx(ctx, slog.String("req_id", requestID))
-
-	return ctx
-}
-
-type ctxKey string
-
-const (
-	requestIDKey ctxKey = "reqID"
-)
 
 type requestLogEntry struct {
 	method  string
