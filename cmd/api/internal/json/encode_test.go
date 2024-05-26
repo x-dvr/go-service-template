@@ -1,6 +1,7 @@
 package json_test
 
 import (
+	"bytes"
 	"net/http"
 	"testing"
 
@@ -33,27 +34,44 @@ func (mw *mockWriter) WriteHeader(statusCode int) {
 	mw.status = statusCode
 }
 
-func TestJsonEncodeString(t *testing.T) {
-	mw := newMockWriter()
-	val := "some string"
-	err := json.Encode(mw, 123, val)
-	if err != nil {
-		t.Fatalf("Should not return an error, got: %v", err)
-	}
+type testVal struct {
+	name     string
+	val      any
+	expected []byte
+}
 
-	if mw.status != 123 {
-		t.Fatalf("Should write status 123, got: %v", mw.status)
-	}
+func TestJsonEncode(t *testing.T) {
+	values := make([]testVal, 0, 2)
+	values = append(values,
+		testVal{name: "encode string", val: "some string", expected: []byte("\"some string\"\n")},
+		testVal{name: "encode int", val: 42, expected: []byte("42\n")},
+	)
 
-	if len(mw.h) != 1 {
-		t.Fatalf("Should write 1 header, got: %v", len(mw.h))
-	}
+	for _, test := range values {
+		t.Run(test.name, func(t *testing.T) {
+			// t.Parallel()
+			mw := newMockWriter()
 
-	if mw.h.Get("Content-Type") != "application/json" {
-		t.Fatalf("Should write content-type header as 'application/json', got: %v", mw.h.Get("Content-Type"))
-	}
+			err := json.Encode(mw, 123, test.val)
+			if err != nil {
+				t.Fatalf("Should not return an error, got: %v", err)
+			}
 
-	if string(mw.buf) != "\"some string\"\n" {
-		t.Fatalf("Should write string: %v , written: %v", []byte("\"some string\""), mw.buf)
+			if mw.status != 123 {
+				t.Fatalf("Should write status 123, got: %v", mw.status)
+			}
+
+			if len(mw.h) != 1 {
+				t.Fatalf("Should write 1 header, got: %v", len(mw.h))
+			}
+
+			if mw.h.Get("Content-Type") != "application/json" {
+				t.Fatalf("Should write content-type header as 'application/json', got: %v", mw.h.Get("Content-Type"))
+			}
+
+			if !bytes.Equal(mw.buf, test.expected) {
+				t.Fatalf("Should write: %v , written: %v", test.expected, mw.buf)
+			}
+		})
 	}
 }
