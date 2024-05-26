@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"context"
@@ -10,13 +10,16 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/x-dvr/go-service-template/cmd/api/internal"
+	"github.com/x-dvr/go-service-template/cmd/api/internal/config"
+	"github.com/x-dvr/go-service-template/cmd/api/internal/json"
+	"github.com/x-dvr/go-service-template/internal/logging"
 )
 
 func StartServer(
 	ctx context.Context,
-	cfg *Config,
+	cfg *config.Config,
 	rootHandler http.Handler,
-	logger *Logger,
+	logger *logging.Logger,
 ) error {
 	httpServer := &http.Server{
 		Addr:     net.JoinHostPort(cfg.Host, cfg.Port),
@@ -79,5 +82,5 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.l.ErrorContext(r.Context(), "Failed to handle request", "error", err)
-	EncodeError(w, internal.WrapError(err))
+	json.EncodeError(w, internal.WrapError(err))
 }

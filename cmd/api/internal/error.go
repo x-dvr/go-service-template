@@ -23,6 +23,18 @@ func NewError(status int, message string, cause error) *Error {
 	}
 }
 
+func (err Error) Error() string {
+	return fmt.Sprintf("Api error: %s, status: %d, cause: %s", err.Message, err.Status, err.Cause.Error())
+}
+
+func (err Error) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("message", err.Message),
+		slog.Int("status", err.Status),
+		slog.Any("cause", err.Cause),
+	)
+}
+
 func WrapError(err error) *Error {
 	var appError *app.Error
 	if errors.As(err, &appError) {
@@ -46,17 +58,5 @@ func WrapError(err error) *Error {
 		http.StatusInternalServerError,
 		http.StatusText(http.StatusInternalServerError),
 		err,
-	)
-}
-
-func (err Error) Error() string {
-	return fmt.Sprintf("Api error: %s, status: %d, cause: %s", err.Message, err.Status, err.Cause.Error())
-}
-
-func (err Error) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.String("message", err.Message),
-		slog.Int("status", err.Status),
-		slog.Any("cause", err.Cause),
 	)
 }

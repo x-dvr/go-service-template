@@ -7,6 +7,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/x-dvr/go-service-template/internal/logging"
+
+	"github.com/x-dvr/go-service-template/cmd/api/internal/config"
 )
 
 func GetMockEnv(key string) string {
@@ -27,11 +31,11 @@ func TestHealthRoute(t *testing.T) {
 	ctx, cancel := context.WithCancel(ctx)
 	t.Cleanup(cancel)
 	logBuf := new(bytes.Buffer)
-	cfg := NewConfig(GetMockEnv, make([]string, 0))
+	cfg := config.New(GetMockEnv, make([]string, 0))
 	router := NewRouter(
 		ctx,
 		cfg,
-		NewLogger(cfg, logBuf),
+		logging.NewLogger(cfg, logBuf),
 	)
 	srv := httptest.NewServer(router)
 	defer srv.Close()

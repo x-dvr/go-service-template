@@ -1,36 +1,40 @@
-package main
+package handlers
 
 import (
 	"log/slog"
 	"net/http"
 	"strconv"
 
-	"github.com/x-dvr/go-service-template/cmd/api/internal"
+	"github.com/x-dvr/go-service-template/internal/logging"
 	"github.com/x-dvr/go-service-template/internal/user"
+
+	"github.com/x-dvr/go-service-template/cmd/api/internal"
+	app_http "github.com/x-dvr/go-service-template/cmd/api/internal/http"
+	"github.com/x-dvr/go-service-template/cmd/api/internal/json"
 )
 
-func handleGetAllUsers(
-	logger *Logger,
+func HandleGetAllUsers(
+	logger *logging.Logger,
 	// store *UserStore,
 ) http.Handler {
-	return NewHandler(
+	return app_http.NewHandler(
 		logger.Logger,
 		func(w http.ResponseWriter, r *http.Request) error {
-			return Encode(w, http.StatusOK, []user.User{})
+			return json.Encode(w, http.StatusOK, []user.User{})
 		},
 	)
 }
 
-func handleGetUser(
-	logger *Logger,
+func HandleGetUser(
+	logger *logging.Logger,
 	// store *UserStore,
 ) http.Handler {
-	return NewHandler(
+	return app_http.NewHandler(
 		logger.Logger,
 		func(w http.ResponseWriter, r *http.Request) error {
 			id, err := strconv.Atoi(r.PathValue("id"))
 			if err != nil {
-				return EncodeError(w, internal.NewError(http.StatusBadRequest, "user id must be integer value", nil))
+				return json.EncodeError(w, internal.NewError(http.StatusBadRequest, "user id must be integer value", nil))
 			}
 			user := &user.User{
 				ID:   id,
@@ -42,23 +46,23 @@ func handleGetUser(
 				"User",
 				slog.Any("user", user),
 			)
-			return Encode(w, http.StatusOK, user)
+			return json.Encode(w, http.StatusOK, user)
 		},
 	)
 }
 
-func handleCreateUser(
-	logger *Logger,
+func HandleCreateUser(
+	logger *logging.Logger,
 	// store *UserStore,
 ) http.Handler {
 	type request struct {
 		Name string `json:"name"`
 	}
 
-	return NewHandler(
+	return app_http.NewHandler(
 		logger.Logger,
 		func(w http.ResponseWriter, r *http.Request) error {
-			requestBody, err := Decode[request](r)
+			requestBody, err := json.Decode[request](r)
 			if err != nil {
 				return err
 			}
@@ -68,7 +72,7 @@ func handleCreateUser(
 				Name: requestBody.Name,
 			}
 
-			return Encode(w, http.StatusOK, usr)
+			return json.Encode(w, http.StatusOK, usr)
 		},
 	)
 }

@@ -6,6 +6,11 @@ import (
 	"io"
 	"os"
 	"os/signal"
+
+	"github.com/x-dvr/go-service-template/internal/logging"
+
+	"github.com/x-dvr/go-service-template/cmd/api/internal/config"
+	"github.com/x-dvr/go-service-template/cmd/api/internal/http"
 )
 
 func run(
@@ -14,11 +19,11 @@ func run(
 	stdout io.Writer,
 	args []string,
 ) error {
-	cfg := NewConfig(getenv, args)
-	logger := NewLogger(cfg, stdout)
+	cfg := config.New(getenv, args)
+	logger := logging.NewLogger(cfg, stdout)
 	rootRouter := NewRouter(ctx, cfg, logger)
 
-	return StartServer(
+	return http.StartServer(
 		ctx,
 		cfg,
 		rootRouter,

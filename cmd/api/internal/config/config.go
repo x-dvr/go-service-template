@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log/slog"
@@ -25,7 +25,7 @@ const (
 	defaultLogLevel = slog.LevelInfo
 )
 
-func NewConfig(getenv func(string) string, args []string) *Config {
+func New(getenv func(string) string, args []string) *Config {
 	var (
 		env      = getenv("APP_ENV")
 		port     = getenv("APP_PORT")
@@ -54,6 +54,14 @@ func NewConfig(getenv func(string) string, args []string) *Config {
 		// TODO: read from env var
 		ShutdownTimeout: 30 * time.Second,
 	}
+}
+
+func (c *Config) GetLogLevel() slog.Level {
+	return c.LogLevel
+}
+
+func (c *Config) IsDevEnv() bool {
+	return c.Env == EnvDevelopment
 }
 
 func (c Config) LogValue() slog.Value {

@@ -1,8 +1,10 @@
-package main
+package json_test
 
 import (
 	"net/http"
 	"testing"
+
+	"github.com/x-dvr/go-service-template/cmd/api/internal/json"
 )
 
 type mockWriter struct {
@@ -34,7 +36,7 @@ func (mw *mockWriter) WriteHeader(statusCode int) {
 func TestJsonEncodeString(t *testing.T) {
 	mw := newMockWriter()
 	val := "some string"
-	err := Encode(mw, 123, val)
+	err := json.Encode(mw, 123, val)
 	if err != nil {
 		t.Fatalf("Should not return an error, got: %v", err)
 	}
