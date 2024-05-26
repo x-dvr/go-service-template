@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/internal/app"
+	"github.com/x-dvr/go-service-template/cmd/api/internal"
 	"github.com/x-dvr/go-service-template/internal/middleware"
 )
 
@@ -60,7 +60,7 @@ func handleNotFound(logger *Logger) http.Handler {
 	return NewHandler(
 		logger.Logger,
 		func(w http.ResponseWriter, r *http.Request) error {
-			return EncodeError(w, app.NewError(nil, http.StatusNotFound, http.StatusText(http.StatusNotFound)))
+			return EncodeError(w, internal.NewError(http.StatusNotFound, http.StatusText(http.StatusNotFound), nil))
 		},
 	)
 }

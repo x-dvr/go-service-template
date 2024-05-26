@@ -1,32 +1,34 @@
 package app
 
 import (
-	"fmt"
+	"errors"
 	"log/slog"
 )
 
+var (
+	ErrNotFound   = errors.New("not found")
+	ErrBadRequest = errors.New("bad request")
+)
+
 type Error struct {
-	Cause   error  `json:"-"`
-	Message string `json:"message"`
-	Code    int    `json:"code"`
+	Type  error
+	Cause error
 }
 
-func NewError(cause error, code int, message string) *Error {
+func NewError(appError, cause error) *Error {
 	return &Error{
-		Cause:   cause,
-		Message: message,
-		Code:    code,
+		Type:  appError,
+		Cause: cause,
 	}
 }
 
 func (err Error) Error() string {
-	return fmt.Sprintf("App error: %s, code: %d, cause: %s", err.Message, err.Code, err.Cause.Error())
+	return errors.Join(err.Type, err.Cause).Error()
 }
 
 func (err Error) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.String("message", err.Message),
-		slog.Int("code", err.Code),
+		slog.Any("type", err.Type),
 		slog.Any("cause", err.Cause),
 	)
 }

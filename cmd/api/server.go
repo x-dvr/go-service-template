@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/internal/app"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/x-dvr/go-service-template/cmd/api/internal"
 )
 
 func StartServer(
@@ -79,12 +79,5 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.l.ErrorContext(r.Context(), "Failed to handle request", "error", err)
-
-	var appError *app.Error
-	if errors.As(err, &appError) {
-		EncodeError(w, appError)
-		return
-	}
-
-	Encode(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+	EncodeError(w, internal.WrapError(err))
 }

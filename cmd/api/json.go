@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/internal/app"
+	"github.com/x-dvr/go-service-template/cmd/api/internal"
 )
 
 func Encode[T any](w http.ResponseWriter, status int, v T) error {
@@ -18,9 +18,9 @@ func Encode[T any](w http.ResponseWriter, status int, v T) error {
 	return nil
 }
 
-func EncodeError(w http.ResponseWriter, e *app.Error) error {
+func EncodeError(w http.ResponseWriter, e *internal.Error) error {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(e.Code)
+	w.WriteHeader(e.Status)
 	if err := json.NewEncoder(w).Encode(e); err != nil {
 		return fmt.Errorf("encode json: %w", err)
 	}

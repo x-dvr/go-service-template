@@ -50,4 +50,8 @@ func TestJsonEncodeString(t *testing.T) {
 	if mw.h.Get("Content-Type") != "application/json" {
 		t.Fatalf("Should write content-type header as 'application/json', got: %v", mw.h.Get("Content-Type"))
 	}
+
+	if string(mw.buf) != "\"some string\"\n" {
+		t.Fatalf("Should write string: %v , written: %v", []byte("\"some string\""), mw.buf)
+	}
 }

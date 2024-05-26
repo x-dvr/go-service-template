@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/x-dvr/go-service-template/internal/app"
+	"github.com/x-dvr/go-service-template/cmd/api/internal"
 	"github.com/x-dvr/go-service-template/internal/user"
 )
 
@@ -30,7 +30,7 @@ func handleGetUser(
 		func(w http.ResponseWriter, r *http.Request) error {
 			id, err := strconv.Atoi(r.PathValue("id"))
 			if err != nil {
-				return EncodeError(w, app.NewError(err, http.StatusBadRequest, "user id must be integer value"))
+				return EncodeError(w, internal.NewError(http.StatusBadRequest, "user id must be integer value", nil))
 			}
 			user := &user.User{
 				ID:   id,
