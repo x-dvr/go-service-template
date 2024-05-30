@@ -40,11 +40,18 @@ type testVal struct {
 	expected []byte
 }
 
+type Struct struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+}
+
 func TestJsonEncode(t *testing.T) {
 	values := make([]testVal, 0, 2)
 	values = append(values,
 		testVal{name: "encode string", val: "some string", expected: []byte("\"some string\"\n")},
 		testVal{name: "encode int", val: 42, expected: []byte("42\n")},
+		testVal{name: "encode bool", val: true, expected: []byte("true\n")},
+		testVal{name: "encode struct", val: Struct{Name: "name", Age: 42}, expected: []byte("{\"name\":\"name\",\"age\":42}\n")},
 	)
 
 	for _, test := range values {
