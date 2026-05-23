@@ -12,7 +12,7 @@ import (
 
 func main() {
 	logs.Setup()
-	echoStore := store.NewMemoryStore()
+	echoStore := store.NewInMemory()
 	echoSvc := echo.NewService(echoStore)
 	mux := http.NewServeMux()
 

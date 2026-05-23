@@ -8,7 +8,7 @@ import (
 	"math/rand/v2"
 	"time"
 
-	common "github.com/x-dvr/go-service-template/core"
+	"github.com/x-dvr/go-service-template/core"
 	"github.com/x-dvr/go-service-template/echo"
 	"github.com/x-dvr/go-service-template/logs"
 )
@@ -17,7 +17,7 @@ type MemoryStore struct {
 	store map[string]echo.Echo
 }
 
-func NewMemoryStore() *MemoryStore {
+func NewInMemory() *MemoryStore {
 	return &MemoryStore{
 		store: make(map[string]echo.Echo),
 	}
@@ -27,10 +27,10 @@ func NewMemoryStore() *MemoryStore {
 func (m *MemoryStore) Load(ctx context.Context, from string) (*echo.Echo, error) {
 	e, err := m.loadInternal(ctx, from)
 	if errors.Is(err, errNotFound) {
-		return nil, common.NewError(common.ErrNotFound, err)
+		return nil, core.NewError(core.ErrNotFound, err)
 	}
 	if err != nil {
-		return nil, common.ErrorFrom(err)
+		return nil, core.ErrorFrom(err)
 	}
 	return e, nil
 }
@@ -39,7 +39,9 @@ func (m *MemoryStore) Load(ctx context.Context, from string) (*echo.Echo, error)
 func (m *MemoryStore) Save(ctx context.Context, e echo.Echo) error {
 	_, exists := m.store[e.From]
 	if exists {
-		return common.NewError(common.ErrDuplicate, nil).WithContext(fmt.Sprintf("already exist: %s", e.From))
+		return core.
+			NewError(core.ErrDuplicate, nil).
+			WithContext(fmt.Sprintf("already exist: %s", e.From))
 	}
 
 	return m.saveInternal(ctx, e)
