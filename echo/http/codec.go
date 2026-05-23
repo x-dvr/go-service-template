@@ -9,15 +9,15 @@ import (
 	"github.com/x-dvr/go-service-template/echo"
 )
 
-func DecodeEcho(r *http.Request) (echo.EchoIn, error) {
+func DecodeEcho(r *http.Request) (echo.In, error) {
 	var body struct {
 		Data string `json:"data"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		return echo.EchoIn{}, common.NewError(common.ErrUnprocessable, err)
+		return echo.In{}, common.NewError(common.ErrUnprocessable, err)
 	}
 	u, _ := url.Parse("http://" + r.RemoteAddr)
-	return echo.EchoIn{
+	return echo.In{
 		Data:      body.Data,
 		From:      u.Hostname(),
 		WithNoise: r.Header.Get("x-with-noise") != "",
@@ -25,7 +25,7 @@ func DecodeEcho(r *http.Request) (echo.EchoIn, error) {
 	}, nil
 }
 
-func EncodeEcho(w http.ResponseWriter, out echo.EchoOut) error {
+func EncodeEcho(w http.ResponseWriter, out echo.Out) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	return json.NewEncoder(w).Encode(struct {

@@ -17,13 +17,13 @@ func NewService(store Store) *Service {
 	}
 }
 
-func (s *Service) Echo(ctx context.Context, in EchoIn) (EchoOut, error) {
+func (s *Service) Echo(ctx context.Context, in In) (Out, error) {
 	if in.UseCached {
 		e, err := s.store.Load(ctx, in.From)
 		if err != nil {
-			return EchoOut{}, fmt.Errorf("load from cache for %q: %w", in.From, err)
+			return Out{}, fmt.Errorf("load from cache for %q: %w", in.From, err)
 		}
-		return EchoOut{
+		return Out{
 			Message: echo(e.Data, in.WithNoise),
 		}, nil
 	}
@@ -32,9 +32,9 @@ func (s *Service) Echo(ctx context.Context, in EchoIn) (EchoOut, error) {
 		Data: in.Data,
 	})
 	if err != nil {
-		return EchoOut{}, fmt.Errorf("save to cache for %q: %w", in.From, err)
+		return Out{}, fmt.Errorf("save to cache for %q: %w", in.From, err)
 	}
-	return EchoOut{
+	return Out{
 		Message: echo(in.Data, in.WithNoise),
 	}, nil
 }

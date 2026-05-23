@@ -4,15 +4,15 @@ import (
 	"github.com/x-dvr/go-service-template/core"
 )
 
-// EchoIn is an input DTO of echo module
-type EchoIn struct {
+// In is an input DTO of echo module
+type In struct {
 	From      string
 	Data      string
 	UseCached bool
 	WithNoise bool
 }
 
-func (in EchoIn) Validate() error {
+func (in In) Validate() error {
 	if in.From == "" {
 		return core.NewError(core.ErrValidation, nil).WithContext("From field is not set")
 	}
@@ -22,7 +22,7 @@ func (in EchoIn) Validate() error {
 	return nil
 }
 
-// EchoOut is an output DTO of echo module
-type EchoOut struct {
+// Out is an output DTO of echo module
+type Out struct {
 	Message string
 }
