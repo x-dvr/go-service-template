@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/echo/core"
-	"github.com/x-dvr/go-service-template/echo/out/store"
+	"github.com/x-dvr/go-service-template/echo"
+	"github.com/x-dvr/go-service-template/echo/store"
 	xhttp "github.com/x-dvr/go-service-template/http"
 	"github.com/x-dvr/go-service-template/logs"
 )
@@ -13,7 +13,7 @@ import (
 func main() {
 	logs.Setup()
 	echoStore := store.NewMemoryStore()
-	echoSvc := core.NewService(echoStore)
+	echoSvc := echo.NewService(echoStore)
 	mux := http.NewServeMux()
 
 	RegisterEcho(mux, echoSvc)
