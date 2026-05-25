@@ -1,7 +1,7 @@
 package echo
 
 import (
-	"github.com/x-dvr/go-service-template/core"
+	"github.com/0xde86/go-service-template/core"
 )
 
 // In is an input DTO of echo module

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
-	common "github.com/x-dvr/go-service-template/core"
-	"github.com/x-dvr/go-service-template/echo"
+	common "github.com/0xde86/go-service-template/core"
+	"github.com/0xde86/go-service-template/echo"
 )
 
 func DecodeEcho(r *http.Request) (echo.In, error) {

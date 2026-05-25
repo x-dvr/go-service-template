@@ -7,8 +7,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/core"
-	"github.com/x-dvr/go-service-template/logs"
+	"github.com/0xde86/go-service-template/core"
+	"github.com/0xde86/go-service-template/logs"
 )
 
 type validator interface{ Validate() error }

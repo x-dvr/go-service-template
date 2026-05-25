@@ -1,3 +1,3 @@
-module github.com/x-dvr/go-service-template
+module github.com/0xde86/go-service-template
 
 go 1.26.3

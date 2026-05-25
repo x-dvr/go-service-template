@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/x-dvr/go-service-template/logs"
+	"github.com/0xde86/go-service-template/logs"
 )
 
 func LoggingMiddleware(next http.Handler) http.Handler {

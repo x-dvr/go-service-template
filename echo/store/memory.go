@@ -8,9 +8,9 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"github.com/x-dvr/go-service-template/core"
-	"github.com/x-dvr/go-service-template/echo"
-	"github.com/x-dvr/go-service-template/logs"
+	"github.com/0xde86/go-service-template/core"
+	"github.com/0xde86/go-service-template/echo"
+	"github.com/0xde86/go-service-template/logs"
 )
 
 type MemoryStore struct {

@@ -4,10 +4,10 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/x-dvr/go-service-template/echo"
-	"github.com/x-dvr/go-service-template/echo/store"
-	xhttp "github.com/x-dvr/go-service-template/http"
-	"github.com/x-dvr/go-service-template/logs"
+	"github.com/0xde86/go-service-template/echo"
+	"github.com/0xde86/go-service-template/echo/store"
+	xhttp "github.com/0xde86/go-service-template/http"
+	"github.com/0xde86/go-service-template/logs"
 )
 
 func main() {
